@@ -153,8 +153,8 @@ app.get('/',(req,res)=>{
 app.post('/api/shorturl',async(req,res)=>{
     //console.log(req.body)
     const url = req.body.url;    
-    const regex = /^(https?:\/\/)?(\w{2,}\.)?(\w+)\.(\w+)(\/\w+)*\/?$/
-
+    //const regex = /^(https?:\/\/)?(\w{2,}\.)?(\w+)\.(\w+)(\/\w+)*\/?$/
+    const regex = /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
     if(!regex.test(url)){
         res.json({error:"invalid url"})
         return;
@@ -163,12 +163,12 @@ app.post('/api/shorturl',async(req,res)=>{
     const finded = await findByOriginalUrl(url, donefunct);
     if(finded){
         console.log('finded')
-        res.json({"original_url":`${req.body.url}`,"short_url":finded.short_url})
+        res.json({original_url:finded.original_url,short_url:finded.short_url})
     }
     else{
         console.log('created')
         const newUrl = await createAndSaveUrl(req.body.url,donefunct)    
-        res.json({"original_url":`${req.body.url}`,"short_url":newUrl.short_url})
+        res.json({original_url:newUrl.original_url,short_url:newUrl.short_url})
     }
 })
 
